@@ -1,12 +1,14 @@
 type RequestOption = Omit<Partial<RequestInit>, 'method'>;
 
+const handleResponse = (response: Response) => response.json();
+
 const get = (url: string, options: RequestOption = {}) => {
   const requestOptions = {
     method: 'GET',
-    ...options
+    ...options,
   };
 
-  return fetch(url, requestOptions);
+  return fetch(url, requestOptions).then(handleResponse);
 };
 
 const post = (url: string, body: any, options: RequestOption = {}) => {
@@ -14,10 +16,10 @@ const post = (url: string, body: any, options: RequestOption = {}) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
-    ...options
+    ...options,
   };
 
-  return fetch(url, requestOptions);
+  return fetch(url, requestOptions).then(handleResponse);
 };
 
 const put = (url: string, body: any, options: RequestOption = {}) => {
@@ -25,24 +27,34 @@ const put = (url: string, body: any, options: RequestOption = {}) => {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
-    ...options
+    ...options,
   };
 
-  return fetch(url, requestOptions);
+  return fetch(url, requestOptions).then(handleResponse);
 };
 
-const _delete = (url: string, options: RequestOption = {}) => {
+const deleteMethod = (url: string, options: RequestOption = {}) => {
   const requestOptions = {
     method: 'DELETE',
-    ...options
+    ...options,
   };
 
-  return fetch(url, requestOptions);
+  return fetch(url, requestOptions).then(handleResponse);
+};
+
+export const setAuthorization = (token: string) => {
+  localStorage.setItem('token', token);
+};
+
+export const getAuthorization = () => {
+  localStorage.getItem('token');
 };
 
 export const fetchWrapper = {
   get,
   post,
   put,
-  delete: _delete,
-}
+  delete: deleteMethod,
+};
+
+export default {};
